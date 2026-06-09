@@ -77,7 +77,7 @@
         <h2 class="title is-3">Abstract</h2>
         <div class="content has-text-justified">
           <p>
-          <!-- TODO -->
+          Video-conditioned policies offer an intuitive way to enable task generalization without new data collection or model fine-tuning. However, learning these policies typically requires aligned human-robot data, where demonstrations must be temporally synchronized or recorded for identical tasks in the same environmental setting. We present Video-π, a hierarchical framework designed to learn from unaligned, cross-embodiment data. Our approach decomposes the task into three specialized modules: a Latent Action Encoder, a Track Prediction Model, and a Track-guided Policy. This hierarchy enables Video-π to effectively leverage diverse and unaligned data sources such as in-the-wild human videos and large-scale robotic datasets. Experimental results demonstrate that our method achieves superior generalization against all baselines across both seen and unseen environments and motions.
           </p>
         </div>
       </div>
@@ -86,6 +86,90 @@
 
     <hr>
     <br>
+
+    <div class="columns is-centered has-text-centered">
+      <div class="column is-four-fifths">
+        <h2 class="title is-3">Learning from Unaligned Data</h2>
+        <div class="content has-text-justified">
+          <p>Video-π is a video-conditioned policy that takes a human prompt video and robot sensory observations as input, enabling the robot to execute tasks by following the motion demonstrated in the video. Prior methods require <i>aligned</i> data, where human and robot demonstrations must be temporally synchronized and recorded for the same task in the same scene. In contrast, our framework removes this constraint, leveraging in-the-wild human videos and large-scale robotic datasets.
+          </p>
+        </div>
+        <img src="static/images/teaser.png" width="100%">
+
+        <br>
+        <br>
+        <div class="content has-text-justified">
+          <p>Video-π leverages diverse data sources organized into three hierarchical levels based on their degree of constraint and annotation, ordered from the broadest to the most task-specific.
+          </p>
+          <ul>
+              <li><b>Cross-embodiment video dataset:</b> a large set of unlabeled human and robot videos for learning high-level, embodiment-agnostic motion patterns.</li>
+              <li><b>Embodiment-specific dataset:</b> a medium-sized set of robot data with action labels for low-level control supervision.</li>
+              <li><b>Task-specific dataset:</b> a small set of demonstrations for the target manipulation behaviors.</li>
+          </ul>
+          <p>None of these sources suffices on its own, due to missing action labels or the lack of aligned cross-embodiment videos. Combined hierarchically, they provide complementary supervision that grounds high-level human intent into executable robot actions without any aligned human-robot data.
+          </p>
+        </div>
+        <img src="static/images/dataset.png" width="100%">
+      </div>
+    </div>
+
+    <hr>
+    <br>
+
+    <div class="columns is-centered has-text-centered">
+      <div class="column is-four-fifths">
+        <h2 class="title is-3">Method Overview</h2>
+        <div class="content has-text-justified">
+          <p>Given a human demonstration video as input, the Latent Action Encoder extracts motion-level priors represented as a sequence of latent actions. The Track Prediction Model then combines these latent actions with the robot’s proprioceptive points (the 2D gripper points in the image frame) to predict future <i>tracks</i>, i.e., trajectories of 2D points across the image frame. Conditioned on the predicted tracks and real-time sensory observations, the Track-Guided Policy generates closed-loop control actions for the robot. As shown in the lower section, each module is trained on a different data level: the Latent Action Encoder on the cross-embodiment video dataset, the Track Prediction Model on the embodiment-specific dataset, and the Track-Guided Policy on the task-specific dataset.
+          </p>
+        </div>
+        <img src="static/images/framework.png" width="100%">
+      </div>
+    </div>
+
+    <hr>
+    <br>
+
+    <div class="columns is-centered has-text-centered">
+      <div class="column is-four-fifths">
+        <h2 class="title is-3">Real-world Evaluation</h2>
+        <div class="content has-text-justified">
+          <p>The primary objective of this benchmark is to evaluate the task generalization of various baselines under unseen, out-of-distribution scenarios. The benchmark defines three progressively challenging levels of generalization, denoted as L1 through L3, based on the novelty of object instances and environmental scenes.
+          </p>
+          <ul>
+              <li><b>L1:</b> Unseen configurations of seen object instances within seen scenes.</li>
+              <li><b>L2:</b> Unseen object instances within seen scenes.</li>
+              <li><b>L3:</b> Unseen object instances within unseen scenes.</li>
+          </ul>
+        </div>
+        <img src="static/images/l123.png" width="100%">
+
+        <br>
+        <br>
+        <h3 class="title is-5 has-text-centered">Generalization (L1–L2)</h3>
+        <video poster="" autoplay controls muted loop width="100%">
+          <source src="static/videos/real1_v2.mp4" type="video/mp4">
+        </video>
+
+        <br>
+        <br>
+        <h3 class="title is-5 has-text-centered">Generalization (L3)</h3>
+        <video poster="" autoplay controls muted loop width="100%">
+          <source src="static/videos/real2_v2.mp4" type="video/mp4">
+        </video>
+
+        <br>
+        <br>
+        <h3 class="title is-4 has-text-centered">Motion Generalization</h3>
+        <div class="content has-text-justified">
+          <p>We further evaluate zero-shot generalization to novel object-motion combinations, spanning both seen and unseen objects. By learning fundamental motion primitives from diverse human videos, Video-π grounds high-level visual cues into executable low-level robotic actions, even when a specific pairing of motion type and object instance never appears in the robot data.
+          </p>
+        </div>
+        <video poster="" autoplay controls muted loop width="100%">
+          <source src="static/videos/real3_v2.mp4" type="video/mp4">
+        </video>
+      </div>
+    </div>
 
 
 
